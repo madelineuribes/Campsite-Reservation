@@ -20,10 +20,11 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 	}
 	
 	@Override
-	public List<Campground> getAllCampgrounds() {
+	public List<Campground> getAllCampgrounds(String parkChoice) {
 		List<Campground> campInfoList = new ArrayList<>();
-		String sqlGetAllCampgrounds = "SELECT * FROM campground";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllCampgrounds);
+		String sqlGetAllCampgrounds = "SELECT * FROM campground INNER JOIN park ON park.park_id = campground.park_id " + 
+				"WHERE park.name = ?";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllCampgrounds, parkChoice);
 		while (results.next()) {
 			Campground tempCamp = new Campground();
 			tempCamp.setCamp_id(results.getInt("campground_id"));
@@ -36,6 +37,4 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		}
 		return campInfoList;
 	}
-
-	
 }

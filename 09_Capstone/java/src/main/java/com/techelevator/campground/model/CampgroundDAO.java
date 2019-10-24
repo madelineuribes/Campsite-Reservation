@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface CampgroundDAO {
 
-	public List<Campground> getAllCampgrounds();
+	public List<Campground> getAllCampgrounds(String parkChoice);
 	
 }

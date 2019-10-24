@@ -8,14 +8,24 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import com.techelevator.campground.model.Campground;
+import com.techelevator.campground.model.CampgroundDAO;
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
+import com.techelevator.campground.model.JDBC.JDBCCampgroundDAO;
 import com.techelevator.campground.model.JDBC.JDBCParkDAO;
 
 public class CampgroundCLI {
 
+	private static final String MENU2_OPTION_VIEW_CAMPGROUNDS = "View Campgrounds";
+	private static final String MENU2_OPTION_SEARCH_RES = "Search for Reservation";
+	private static final String MENU2_OPTION_RETURN = "Return to Previous Screen";
+	private static final String[] MENU2_OPTIONS = { MENU2_OPTION_VIEW_CAMPGROUNDS, MENU2_OPTION_SEARCH_RES,
+			MENU2_OPTION_RETURN };
+
 	private JDBCParkDAO tempPark;
 	private ParkDAO parkDAO;
+	private CampgroundDAO campgroundDAO;
 
 	private String[] mainMenuOptions;
 
@@ -36,6 +46,7 @@ public class CampgroundCLI {
 		tempPark = new JDBCParkDAO(datasource);
 		menu = new Menu(System.in, System.out);
 		parkDAO = new JDBCParkDAO(datasource);
+		campgroundDAO = new JDBCCampgroundDAO(datasource);
 	}
 
 	public void run() {
@@ -44,17 +55,36 @@ public class CampgroundCLI {
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(mainMenuOptions);
 
-			if (choice.equals(mainMenuOptions[mainMenuOptions.length - 1])) {
-				System.out.println("Thank you, goodbye");
-				System.exit(0);
-			}
 			for (int i = 0; i < mainMenuOptions.length; i++) {
 				if (choice.contentEquals(mainMenuOptions[i])) {
 					String name = mainMenuOptions[i];
 					Park parkInfo = parkDAO.displayParkInfo(name);
 					System.out.print(parkInfo.getName() + "\nLocation: " + parkInfo.getLocation() + "\nArea: " + parkInfo.getArea() + "\nEstablished: " + parkInfo.getEstablishDate() + "\nVisitors: " + parkInfo.getVisitors() + "\nDescription: " + parkInfo.getDescription() + "\n");
+			
+					String menuTwoChoice = (String) menu.getChoiceFromOptions(MENU2_OPTIONS);
+					
+					if(menuTwoChoice.equals(MENU2_OPTION_VIEW_CAMPGROUNDS)) {
+						List<Campground> campInfoList = campgroundDAO.getAllCampgrounds();
+						System.out.println(parkInfo.getName() + " National Park Campgrounds");
+						String format = "|%1$-10s|%2$-5s|%3$-5s|%4$-5s|\n";
+						System.out.format(format, "Name", "Open", "Close", "Daily Fee");
+						for(int j = 0; j < campInfoList.size(); j++) {
+							System.out.format(format, campInfoList.get(j).getName(), campInfoList.get(j).getOpen_from(), campInfoList.get(j).getOpen_to(), campInfoList.get(j).getDaily_fee(), "\n");
+						}
+					} else if (menuTwoChoice.equals(MENU2_OPTION_SEARCH_RES)) {
+						
+					} else if (menuTwoChoice.equals(MENU2_OPTION_RETURN)) {
+						
+					}
+						
+				}
+
+				if (choice.equals(mainMenuOptions[mainMenuOptions.length - 1])) {
+					System.out.println("Thank you, goodbye");
+					System.exit(0);
 				}
 			}
+			
 		}
 	}
 }

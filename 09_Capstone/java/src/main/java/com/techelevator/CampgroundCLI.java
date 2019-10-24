@@ -66,7 +66,7 @@ public class CampgroundCLI {
 					if(menuTwoChoice.equals(MENU2_OPTION_VIEW_CAMPGROUNDS)) {
 						List<Campground> campInfoList = campgroundDAO.getAllCampgrounds();
 						System.out.println(parkInfo.getName() + " National Park Campgrounds");
-						String format = "|%1$-10s|%2$-5s|%3$-5s|%4$-5s|\n";
+						String format = "|%1$-32s|%2$-5s|%3$-5s|%4$-10s|\n";
 						System.out.format(format, "Name", "Open", "Close", "Daily Fee");
 						for(int j = 0; j < campInfoList.size(); j++) {
 							System.out.format(format, campInfoList.get(j).getName(), campInfoList.get(j).getOpen_from(), campInfoList.get(j).getOpen_to(), campInfoList.get(j).getDaily_fee(), "\n");

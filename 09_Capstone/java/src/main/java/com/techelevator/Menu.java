@@ -18,6 +18,10 @@ public class Menu {
 	public Object getChoiceFromOptions(Object[] options) {
 		Object choice = null;
 		while(choice == null) {
+			/* Debugger
+			 * for (int i = 0; i < options.length; i++) { System.out.println("in menu: " +
+			 * options[i].toString()); }
+			 */
 			displayMenuOptions(options);
 			choice = getChoiceFromUserInput(options);
 		}

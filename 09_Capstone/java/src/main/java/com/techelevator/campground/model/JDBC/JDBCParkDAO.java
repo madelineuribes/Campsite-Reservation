@@ -49,9 +49,20 @@ public class JDBCParkDAO implements ParkDAO{
 	}
 	
 	@Override
-	public List<Park> displayParkInfo() {
-		// TODO Auto-generated method stub
-		return null;
+	public Park displayParkInfo(String name) {
+		Park parkInfo = new Park();
+		String sqlGetAllParks = "SELECT * FROM park WHERE name = ?";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllParks, name);
+		while (results.next()) {
+			parkInfo.setId(results.getInt("park_id"));
+			parkInfo.setName(results.getString("name"));
+			parkInfo.setLocation(results.getString("location"));
+			parkInfo.setArea(results.getInt("area"));
+			parkInfo.setVisitors(results.getInt("visitors"));
+			parkInfo.setEstablishDate(results.getString("establish_date"));
+			parkInfo.setDescription(results.getString("description"));
+		}
+		return parkInfo;
 	}
 
 

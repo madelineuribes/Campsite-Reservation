@@ -9,6 +9,6 @@ public interface ParkDAO {
 	
 	public String[] getParkStringArray(List<Park> parkNames);
 	
-	public List<Park> displayParkInfo();
+	public Park displayParkInfo(String name);
 	
 }

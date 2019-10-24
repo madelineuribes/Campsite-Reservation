@@ -12,9 +12,10 @@ public class CampgroundCLI {
 
 	private JDBCParkDAO tempPark;
 	
-	private String[] mainMenuOptions ;
+	private String[] mainMenuOptions;
 
 	private Menu menu;
+
 	
 	public static void main(String[] args) {
 		BasicDataSource dataSource = new BasicDataSource();
@@ -34,11 +35,15 @@ public class CampgroundCLI {
 
 	public void run() {
 		mainMenuOptions = tempPark.getParkStringArray(tempPark.getAllParks());
-		/* Debugger
-		 * for (String n: mainMenuOptions) { System.out.println("in run: " + n); }
-		 */
+		
+		
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(mainMenuOptions);
+
+			if(choice.equals(mainMenuOptions[mainMenuOptions.length - 1])) {
+				System.out.println("Thank you, goodbye");
+				System.exit(0);
+			}
 		}
 		
 	}

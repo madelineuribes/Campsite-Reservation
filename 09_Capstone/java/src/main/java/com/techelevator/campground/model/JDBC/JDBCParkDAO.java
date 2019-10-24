@@ -36,14 +36,15 @@ public class JDBCParkDAO implements ParkDAO{
 	@Override
 	public String[] getParkStringArray(List<Park> parkNames) 
 	{ 
-	    String parkNameString[] = new String[parkNames.size()]; 
-
+	    String parkNameString[] = new String[parkNames.size() + 1]; 
+	    
 	    // ArrayList to Array Conversion 
 	    for (int j = 0; j < parkNames.size(); j++) { 
 	        // Assign each value to String array 
 	    	parkNameString[j] = parkNames.get(j).getName(); 
 	    	// System.out.println("adding park name: " + parkNameString[j]);
 	    } 
+	    parkNameString[parkNameString.length - 1] = "quit";
 	    return parkNameString; 
 	}
 	

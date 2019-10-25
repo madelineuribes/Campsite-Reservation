@@ -28,11 +28,8 @@ public class CampgroundCLI {
 	private static final String[] MENU3_OPTION_SEARCH_RES = { MENU3_OPTION_SEARCH_FOR_RESERVATION,
 			MENU3_OPTION_RETURN_TO_MENU2 };
 
-	// Select a Command
-	// 1) Search for Available Reservation
-//	2) Return to Previous Screen
-
-	private JDBCParkDAO tempPark;
+	private JDBCParkDAO JDBCPark;
+	private JDBCCampgroundDAO JDBCCamp;
 	private ParkDAO parkDAO;
 	private CampgroundDAO campgroundDAO;
 
@@ -51,8 +48,8 @@ public class CampgroundCLI {
 	}
 
 	public CampgroundCLI(DataSource datasource) {
-		// create your DAOs here
-		tempPark = new JDBCParkDAO(datasource);
+		JDBCPark = new JDBCParkDAO(datasource);
+		JDBCCamp = new JDBCCampgroundDAO(datasource);
 		menu = new Menu(System.in, System.out);
 		parkDAO = new JDBCParkDAO(datasource);
 		campgroundDAO = new JDBCCampgroundDAO(datasource);
@@ -61,12 +58,17 @@ public class CampgroundCLI {
 	public void handleThirdLevel(String parkChoice) {
 
 		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
-		System.out.println(" National Park Campgrounds");
-		String format = "|%1$-32s|%2$-5s|%3$-5s|%4$-10s|\n";
-		System.out.format(format, "Name", "Open", "Close", "Daily Fee");
+		System.out.println("\n" + parkChoice + " National Park Campgrounds \n");
+		String format = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
+		System.out.format(format, "", "Name", "Open", "Close", "Daily Fee");
+		String format1 = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
+		System.out.println("--|-----------------------------------------------------------------|");
 		for (int j = 0; j < campInfoList.size(); j++) {
-			System.out.format(format, campInfoList.get(j).getName(), campInfoList.get(j).getOpen_from(),
-					campInfoList.get(j).getOpen_to(), campInfoList.get(j).getDaily_fee(), "\n");
+			String openMonth = JDBCCamp.convertToMonth(campInfoList.get(j).getOpenFrom());
+			String closeMonth = JDBCCamp.convertToMonth(campInfoList.get(j).getOpenTo());
+			
+			System.out.format(format1, "#" + (j + 1), campInfoList.get(j).getName(), openMonth,
+					closeMonth, "$" + campInfoList.get(j).getDailyFee() +"0", "\n");
 		}
 
 		while (true) {
@@ -79,22 +81,25 @@ public class CampgroundCLI {
 	}
 
 	public void handleSecondLevel(String parkChoice) {
-
-		System.out.println("in the second level now for park " + parkChoice);
-
-		Park parkInfo = parkDAO.displayParkInfo(parkChoice);
-		System.out.print(parkInfo.getName() + "\nLocation: " + parkInfo.getLocation() + "\nArea: " + parkInfo.getArea()
-				+ "\nEstablished: " + parkInfo.getEstablishDate() + "\nVisitors: " + parkInfo.getVisitors()
-				+ "\nDescription: " + parkInfo.getDescription() + "\n");
-
 		while (true) {
+			Park parkInfo = parkDAO.displayParkInfo(parkChoice);
+			System.out.println("\nPark Information");
+			System.out.println(parkInfo.getName() + " National Park\n");
+			String format1 = "%1$-15s%2$-10s";
+			String format2 = "%1$-14s%2$-10s";
+			System.out.format(format2, "Location:", parkInfo.getLocation());
+			System.out.format(format1, "\nArea:", parkInfo.getArea() + " sq km");
+			System.out.format(format1, "\nEstablished:", parkInfo.getEstablishDate());
+			System.out.format(format1, "\nVisitors:", parkInfo.getVisitors());
+			System.out.println("\n" + parkInfo.getDescription());
+			
 			// Display the second level of prompts:
 			String secondChoice = (String) menu.getChoiceFromOptions(MENU2_OPTIONS);
 
 			if (secondChoice.equals(MENU2_OPTION_VIEW_CAMPGROUNDS)) {
 				handleThirdLevel(parkChoice);
 			}
-			
+
 			if (secondChoice.equals(MENU2_OPTION_RETURN)) {
 				break;
 			}
@@ -102,16 +107,25 @@ public class CampgroundCLI {
 	}
 
 	public void run() {
-		mainMenuOptions = tempPark.getParkStringArray(tempPark.getAllParks());
+		System.out.println("National Park Campsite Reservation");
+		System.out.println("Select a Park for Further Details");
+		mainMenuOptions = JDBCPark.getParkStringArray(JDBCPark.getAllParks());
 
-		// 1st leve of the menu
+		// 1st level of the menu
 		while (true) {
 
 			String parkChoice = (String) menu.getChoiceFromOptions(mainMenuOptions);
-			handleSecondLevel(parkChoice);
-
+			if (parkChoice.equals(mainMenuOptions[mainMenuOptions.length - 1])) {
+				System.out.println("Thank you, Goodbye.");
+				System.exit(0);
+			} else {
+				handleSecondLevel(parkChoice);
+			}
 		}
 
+		
+		
+		
 //		while (true) {
 //			String choice = (String) menu.getChoiceFromOptions(mainMenuOptions);
 //

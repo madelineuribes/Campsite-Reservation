@@ -1,5 +1,4 @@
 package com.techelevator.campground.model.JDBC;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class JDBCParkDAO implements ParkDAO{
 	@Override
 	public List<Park> getAllParks() {
 		List<Park> parkNames = new ArrayList<>();
-		String sqlGetAllParks = "SELECT name FROM park";
+		String sqlGetAllParks = "SELECT park_id, name, location, establish_date, area, visitors, description FROM park";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllParks);
 		while (results.next()) {
 			Park tempPark = new Park();
@@ -37,14 +36,11 @@ public class JDBCParkDAO implements ParkDAO{
 	public String[] getParkStringArray(List<Park> parkNames) 
 	{ 
 	    String parkNameString[] = new String[parkNames.size() + 1]; 
-	    
-	    // ArrayList to Array Conversion 
+	 
 	    for (int j = 0; j < parkNames.size(); j++) { 
-	        // Assign each value to String array 
 	    	parkNameString[j] = parkNames.get(j).getName(); 
-	    	// System.out.println("adding park name: " + parkNameString[j]);
 	    } 
-	    parkNameString[parkNameString.length - 1] = "quit";
+	    parkNameString[parkNameString.length - 1] = "Quit";
 	    return parkNameString; 
 	}
 	
@@ -64,9 +60,6 @@ public class JDBCParkDAO implements ParkDAO{
 		}
 		return parkInfo;
 	}
-
-
-
 
 }
 

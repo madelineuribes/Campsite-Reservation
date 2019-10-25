@@ -27,14 +27,44 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllCampgrounds, parkChoice);
 		while (results.next()) {
 			Campground tempCamp = new Campground();
-			tempCamp.setCamp_id(results.getInt("campground_id"));
-			tempCamp.setPark_id(results.getInt("park_id"));
+			tempCamp.setCampId(results.getInt("campground_id"));
+			tempCamp.setParkId(results.getInt("park_id"));
 			tempCamp.setName(results.getString("name"));
-			tempCamp.setOpen_from(results.getInt("open_from_mm"));
-			tempCamp.setOpen_to(results.getInt("open_to_mm"));
-			tempCamp.setDaily_fee(results.getDouble("daily_fee"));
+			tempCamp.setOpenFrom(results.getInt("open_from_mm"));
+			tempCamp.setOpenTo(results.getInt("open_to_mm"));
+			tempCamp.setDailyFee(results.getDouble("daily_fee"));
 			campInfoList.add(tempCamp);
 		}
 		return campInfoList;
+	}
+	
+	public String convertToMonth(int month_num) {
+		String month = "";
+		if(month_num == 1) {
+			month = "January";
+		} else if(month_num == 2) {
+			month = "February";
+		} else if(month_num == 3) {
+			month = "March";
+		} else if(month_num == 4) {
+			month = "April";
+		} else if(month_num == 5) {
+			month = "May";
+		} else if(month_num == 6) {
+			month = "June";
+		} else if(month_num == 7) {
+			month = "July";
+		} else if(month_num == 8) {
+			month = "August";
+		} else if(month_num == 9) {
+			month = "September";
+		} else if(month_num == 10) {
+			month = "October";
+		} else if(month_num == 11) {
+			month = "November";
+		} else if(month_num == 12) {
+			month = "December";
+		}
+		return month;
 	}
 }

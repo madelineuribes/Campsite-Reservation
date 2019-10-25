@@ -2,27 +2,28 @@ package com.techelevator.campground.model;
 
 public class Campground {
 
-	private int camp_id;
-	private int park_id;
+	private int campId;
+	private int parkId;
 	private String name;
-	private int open_from;
-	private int open_to;
-	private double daily_fee;
+	private int openFrom;
+	private int openTo;
+	private double dailyFee;
 	
-	public int getCamp_id() {
-		return camp_id;
+	
+	public int getCampId() {
+		return campId;
 	}
 	
-	public void setCamp_id(int camp_id) {
-		this.camp_id = camp_id;
+	public void setCampId(int campId) {
+		this.campId = campId;
 	}
 	
-	public int getPark_id() {
-		return park_id;
+	public int getParkId() {
+		return parkId;
 	}
 	
-	public void setPark_id(int park_id) {
-		this.park_id = park_id;
+	public void setParkId(int parkId) {
+		this.parkId = parkId;
 	}
 	
 	public String getName() {
@@ -33,28 +34,28 @@ public class Campground {
 		this.name = name;
 	}
 	
-	public int getOpen_from() {
-		return open_from;
+	public int getOpenFrom() {
+		return openFrom;
 	}
 	
-	public void setOpen_from(int open_from) {
-		this.open_from = open_from;
+	public void setOpenFrom(int openFrom) {
+		this.openFrom = openFrom;
 	}
 	
-	public int getOpen_to() {
-		return open_to;
+	public int getOpenTo() {
+		return openTo;
 	}
 	
-	public void setOpen_to(int open_to) {
-		this.open_to = open_to;
+	public void setOpenTo(int openTo) {
+		this.openTo = openTo;
 	}
 	
-	public double getDaily_fee() {
-		return daily_fee;
+	public double getDailyFee() {
+		return dailyFee;
 	}
 	
-	public void setDaily_fee(double daily_fee) {
-		this.daily_fee = daily_fee;
+	public void setDailyFee(double dailyFee) {
+		this.dailyFee = dailyFee;
 	}
 	
 }

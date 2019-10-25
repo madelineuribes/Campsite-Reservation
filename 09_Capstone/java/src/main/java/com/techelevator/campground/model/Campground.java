@@ -9,7 +9,6 @@ public class Campground {
 	private int openTo;
 	private double dailyFee;
 	
-	
 	public int getCampId() {
 		return campId;
 	}

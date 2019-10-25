@@ -14,6 +14,7 @@ import com.techelevator.campground.model.CampgroundDAO;
 public class JDBCCampgroundDAO implements CampgroundDAO {
 
 	private JdbcTemplate jdbcTemplate;
+	private JDBCCampgroundDAO JDBCCamp;
 	
 	public JDBCCampgroundDAO(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -36,6 +37,21 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 			campInfoList.add(tempCamp);
 		}
 		return campInfoList;
+	}
+	
+	public void formatCamgroundTable(String parkChoice, List<Campground> campInfoList) {
+		System.out.println("\n" + parkChoice + " National Park Campgrounds \n");
+		String format = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
+		System.out.format(format, "", "Name", "Open", "Close", "Daily Fee");
+		String format1 = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
+		System.out.println("--|-----------------------------------------------------------------|");
+		for (int j = 0; j < campInfoList.size(); j++) {
+			String openMonth = convertToMonth(campInfoList.get(j).getOpenFrom());
+			String closeMonth = convertToMonth(campInfoList.get(j).getOpenTo());
+			
+			System.out.format(format1, "#" + (j + 1), campInfoList.get(j).getName(), openMonth,
+					closeMonth, "$" + campInfoList.get(j).getDailyFee() +"0", "\n");
+		}
 	}
 	
 	public String convertToMonth(int month_num) {

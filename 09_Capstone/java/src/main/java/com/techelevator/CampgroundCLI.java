@@ -55,25 +55,36 @@ public class CampgroundCLI {
 		campgroundDAO = new JDBCCampgroundDAO(datasource);
 	}
 
+	public void handleFourthLevel(String parkChoice, List<Campground> campInfoList) {
+		System.out.println("Search for Campground Reservation");
+		JDBCCamp.formatCamgroundTable(parkChoice, campInfoList);
+	}
+	
 	public void handleThirdLevel(String parkChoice) {
 
 		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
-		System.out.println("\n" + parkChoice + " National Park Campgrounds \n");
-		String format = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
-		System.out.format(format, "", "Name", "Open", "Close", "Daily Fee");
-		String format1 = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
-		System.out.println("--|-----------------------------------------------------------------|");
-		for (int j = 0; j < campInfoList.size(); j++) {
-			String openMonth = JDBCCamp.convertToMonth(campInfoList.get(j).getOpenFrom());
-			String closeMonth = JDBCCamp.convertToMonth(campInfoList.get(j).getOpenTo());
-			
-			System.out.format(format1, "#" + (j + 1), campInfoList.get(j).getName(), openMonth,
-					closeMonth, "$" + campInfoList.get(j).getDailyFee() +"0", "\n");
-		}
+		JDBCCamp.formatCamgroundTable(parkChoice, campInfoList);
+		/*
+		 * System.out.println("\n" + parkChoice + " National Park Campgrounds \n");
+		 * String format = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
+		 * System.out.format(format, "", "Name", "Open", "Close", "Daily Fee"); String
+		 * format1 = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n"; System.out.println(
+		 * "--|-----------------------------------------------------------------|"); for
+		 * (int j = 0; j < campInfoList.size(); j++) { String openMonth =
+		 * JDBCCamp.convertToMonth(campInfoList.get(j).getOpenFrom()); String closeMonth
+		 * = JDBCCamp.convertToMonth(campInfoList.get(j).getOpenTo());
+		 * 
+		 * System.out.format(format1, "#" + (j + 1), campInfoList.get(j).getName(),
+		 * openMonth, closeMonth, "$" + campInfoList.get(j).getDailyFee() +"0", "\n"); }
+		 */
 
 		while (true) {
 			String thirdChoice = (String) menu.getChoiceFromOptions(MENU3_OPTION_SEARCH_RES);
 
+			if (thirdChoice.equals(MENU3_OPTION_SEARCH_FOR_RESERVATION)) {
+				handleFourthLevel(parkChoice, campInfoList);
+			}
+			
 			if (thirdChoice.equals(MENU3_OPTION_RETURN_TO_MENU2)) {
 				break;
 			}

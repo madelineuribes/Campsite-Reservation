@@ -1,5 +1,7 @@
 package com.techelevator.campground.model.JDBC;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.CampgroundDAO;
-import com.techelevator.campground.model.Reservation;
 
 public class JDBCCampgroundDAO implements CampgroundDAO {
 
@@ -37,16 +38,6 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 			campInfoList.add(tempCamp);
 		}
 		return campInfoList;
-	}
-	
-	public List<Campground> getAvailableCampgrounds(String campId, String arrivInput, String departInput) {
-		List<Campground> reservationSiteList = new ArrayList<>();
-		String sqlGetAllSites = "SELECT * FROM reservation INNER JOIN site ON reservation.site_id = site.site_id " + 
-				"INNER JOIN campground ON site.campground_id = campground.campground_id WHERE site.campground_id = ? " + 
-				"AND from_date > ? AND to_date < ?";
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllSites, campId, arrivInput, departInput);	
-		
-		return reservationSiteList;
 	}
 	
 	public void formatCamgroundTable(String parkChoice, List<Campground> campInfoList) {

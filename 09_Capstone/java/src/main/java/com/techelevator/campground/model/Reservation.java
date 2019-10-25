@@ -47,5 +47,4 @@ public class Reservation {
 		this.reservationName = reservationName;
 	}
 
-
 }

@@ -60,6 +60,5 @@ public class JDBCParkDAO implements ParkDAO{
 		}
 		return parkInfo;
 	}
-
 }
 

@@ -107,7 +107,9 @@ public class CampgroundCLI {
 	}
 
 	public void run() {
+		System.out.println("*--------------------------------*");
 		System.out.println("National Park Campsite Reservation");
+		System.out.println("*--------------------------------*");
 		System.out.println("Select a Park for Further Details");
 		mainMenuOptions = JDBCPark.getParkStringArray(JDBCPark.getAllParks());
 

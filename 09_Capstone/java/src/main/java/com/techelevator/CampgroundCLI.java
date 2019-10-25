@@ -3,6 +3,7 @@ package com.techelevator;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.sql.DataSource;
 
@@ -12,8 +13,13 @@ import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.CampgroundDAO;
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
+import com.techelevator.campground.model.Reservation;
+import com.techelevator.campground.model.Site;
+import com.techelevator.campground.model.SiteDAO;
 import com.techelevator.campground.model.JDBC.JDBCCampgroundDAO;
 import com.techelevator.campground.model.JDBC.JDBCParkDAO;
+import com.techelevator.campground.model.JDBC.JDBCReservationDAO;
+import com.techelevator.campground.model.JDBC.JDBCSiteDAO;
 
 public class CampgroundCLI {
 
@@ -32,6 +38,8 @@ public class CampgroundCLI {
 	private JDBCCampgroundDAO JDBCCamp;
 	private ParkDAO parkDAO;
 	private CampgroundDAO campgroundDAO;
+	private JDBCReservationDAO JDBCReservation;
+	private SiteDAO JDBCSite;
 
 	private String[] mainMenuOptions;
 
@@ -53,36 +61,44 @@ public class CampgroundCLI {
 		menu = new Menu(System.in, System.out);
 		parkDAO = new JDBCParkDAO(datasource);
 		campgroundDAO = new JDBCCampgroundDAO(datasource);
+		JDBCReservation = new JDBCReservationDAO(datasource);
+		JDBCSite = new JDBCSiteDAO(datasource);
 	}
 
 	public void handleFourthLevel(String parkChoice, List<Campground> campInfoList) {
 		System.out.println("Search for Campground Reservation");
 		JDBCCamp.formatCamgroundTable(parkChoice, campInfoList);
+		System.out.println("\nWhich campground (enter 0 to cancel)? ");
+		Scanner userInput = new Scanner(System.in);
+		String campNumInput = userInput.nextLine();
+		
+		System.out.println("What is the arrival date? (yyyy-mm-dd) "); 
+		Scanner userInput2 = new Scanner(System.in);
+		String arrivInput = userInput2.nextLine();
+		
+		System.out.println("What is the departure date? (yyyy-mm-dd) "); 
+		Scanner userInput3 = new Scanner(System.in);
+		String departInput = userInput3.nextLine();
+		
+		List<Campground> campList = JDBCCamp.getAvailableCampgrounds(campNumInput, arrivInput, departInput);
+		List<Site> siteList = JDBCSite.getAvailableSite(campNumInput, arrivInput, departInput);
+		List<Reservation> reservationSiteList = JDBCReservation.getAvailableSite(campNumInput, arrivInput, departInput);
+		
+		JDBCReservation.formatSiteReservationTable(reservationSiteList, siteList, campList);
+		
 	}
 	
 	public void handleThirdLevel(String parkChoice) {
 
 		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
 		JDBCCamp.formatCamgroundTable(parkChoice, campInfoList);
-		/*
-		 * System.out.println("\n" + parkChoice + " National Park Campgrounds \n");
-		 * String format = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
-		 * System.out.format(format, "", "Name", "Open", "Close", "Daily Fee"); String
-		 * format1 = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n"; System.out.println(
-		 * "--|-----------------------------------------------------------------|"); for
-		 * (int j = 0; j < campInfoList.size(); j++) { String openMonth =
-		 * JDBCCamp.convertToMonth(campInfoList.get(j).getOpenFrom()); String closeMonth
-		 * = JDBCCamp.convertToMonth(campInfoList.get(j).getOpenTo());
-		 * 
-		 * System.out.format(format1, "#" + (j + 1), campInfoList.get(j).getName(),
-		 * openMonth, closeMonth, "$" + campInfoList.get(j).getDailyFee() +"0", "\n"); }
-		 */
 
 		while (true) {
 			String thirdChoice = (String) menu.getChoiceFromOptions(MENU3_OPTION_SEARCH_RES);
 
 			if (thirdChoice.equals(MENU3_OPTION_SEARCH_FOR_RESERVATION)) {
 				handleFourthLevel(parkChoice, campInfoList);
+				
 			}
 			
 			if (thirdChoice.equals(MENU3_OPTION_RETURN_TO_MENU2)) {

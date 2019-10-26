@@ -23,11 +23,8 @@ public class JDBCSiteDAO implements SiteDAO {
 	}
 	
 	@Override
-	public List<Site> getAvailableSite(String campId, String arrivInput, String departInput) {
+	public List<Site> getAvailableSite(long campId, LocalDate arrivInput, LocalDate departInput) {
 		List<Site> reservationSiteList = new ArrayList<>();
-		Integer intCamp = Integer.parseInt(campId);
-		LocalDate arriveDate = LocalDate.parse(arrivInput);
-		LocalDate departDate = LocalDate.parse(departInput);
 		
 		String sqlGetAllSites = "SELECT site.site_id, site.campground_id, site.site_number, "
 				+ "site.max_occupancy, site.accessible, site.max_rv_length, site.utilities, c.daily_fee "
@@ -39,7 +36,7 @@ public class JDBCSiteDAO implements SiteDAO {
 				+ "AND reservation.to_date >= ? AND site.campground_id = ?) "
 				+ "GROUP BY site.site_id, site.campground_id, c.daily_fee LIMIT 5";
 		
-		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllSites, departDate, arriveDate, intCamp);	
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllSites, departInput, arrivInput, campId);	
 		
 		while (results.next()) {
 			Site tempSite = new Site();
@@ -59,7 +56,6 @@ public class JDBCSiteDAO implements SiteDAO {
 	public void formatSiteReservationTable(List<Site> reservationSiteList) {
 		System.out.println("\nResults Matching Your Search Criteria");
 		String format = "%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-4s|\n";
-		System.out.format(format, "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost");
 		for (Site site : reservationSiteList) {
 			System.out.format(format, site.getSiteNumber(), site.getMaxOccupancy(), site.isAccessible(),
 					site.getMaxRvLength(), site.isUtilities(), site.getDailyFee().longValue()+".00" + "\n");

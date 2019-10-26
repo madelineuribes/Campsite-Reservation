@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
 
@@ -70,22 +72,33 @@ public class CampgroundCLI {
 	public void handleFourthLevel(String parkChoice, List<Campground> campInfoList) {
 		System.out.println("Search for Campground Reservation");
 		JDBCCamp.formatCamgroundTable(parkChoice, campInfoList);
-		System.out.println("\nWhich campground (enter 0 to cancel)? ");
-		
-		Scanner userInput = new Scanner(System.in);
-		String campNumInput = userInput.nextLine();
-		
-		System.out.println("What is the arrival date? (yyyy-mm-dd) "); 
-		String arrivInput = userInput.nextLine();
-		
-		System.out.println("What is the departure date? (yyyy-mm-dd) "); 
-		String departInput = userInput.nextLine();
-	
-		List<Site> reservationSiteList = JDBCSite.getAvailableSite(campNumInput, arrivInput, departInput);
-		JDBCSite.formatSiteReservationTable(reservationSiteList);
-		
+
+		while (true) {
+			String userCampChoice = getUserInput("\nWhich campground (enter 0 to cancel)? ");
+			long result = Long.parseLong(userCampChoice);
+			if (result == 0) {
+				// If 0
+			}
+			LocalDate arrivalDate = getDateInput("What is the arrival date? (MM/DD/YYYY) ");
+			LocalDate departureDate = getDateInput("What is the departure date? (MM/DD/YYYY) ");
+			long diff = ChronoUnit.DAYS.between(arrivalDate, departureDate);
+
+			if (diff < 1) {
+				System.out.println("Please select another time range");
+			} else {
+				String format = "%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-4s|\n";
+				System.out.format(format, "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost");
+				List<Site> reservationSiteList = JDBCSite.getAvailableSite(result, arrivalDate, departureDate);
+				JDBCSite.formatSiteReservationTable(reservationSiteList);
+				if (reservationSiteList.size() == 0) {
+					System.out.println("No Avaliable Sites. Please try again.");
+				} else {
+					// add reservation
+				}
+			}
+		}
 	}
-	
+
 	public void handleThirdLevel(String parkChoice) {
 
 		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
@@ -97,7 +110,7 @@ public class CampgroundCLI {
 			if (thirdChoice.equals(MENU3_OPTION_SEARCH_FOR_RESERVATION)) {
 				handleFourthLevel(parkChoice, campInfoList);
 			}
-			
+
 			if (thirdChoice.equals(MENU3_OPTION_RETURN_TO_MENU2)) {
 				break;
 			}
@@ -116,7 +129,7 @@ public class CampgroundCLI {
 			System.out.format(format1, "\nEstablished:", parkInfo.getEstablishDate());
 			System.out.format(format1, "\nVisitors:", parkInfo.getVisitors());
 			System.out.println("\n" + parkInfo.getDescription());
-			
+
 			// Display the second level of prompts:
 			String secondChoice = (String) menu.getChoiceFromOptions(MENU2_OPTIONS);
 
@@ -149,4 +162,30 @@ public class CampgroundCLI {
 			}
 		}
 	}
+
+	private String getUserInput(String prompt) {
+		String userInput = "";
+		Scanner input = new Scanner(System.in);
+		while (userInput.isEmpty()) {
+			System.out.print(prompt + " >>> ");
+			userInput = input.nextLine();
+		}
+		return userInput;
+	}
+
+	private LocalDate getDateInput(String prompt) {
+		LocalDate userDate = null;
+		DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("mm/dd/yyyy");
+
+		while (userDate == null) {
+			try {
+				String dateChoice = getUserInput(prompt);
+				userDate = LocalDate.parse(dateChoice, inputFormat);
+			} catch (DateTimeParseException e) {
+				System.out.println("Invalid date format.");
+			}
+		}
+		return userDate;
+	}
+
 }

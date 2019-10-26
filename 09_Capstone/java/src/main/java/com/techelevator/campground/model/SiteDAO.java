@@ -1,11 +1,11 @@
 package com.techelevator.campground.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SiteDAO {
 
-	public List<Site> getAvailableSite(String campId, String arrivInput, String departInput);
-
-	void formatSiteReservationTable(List<Site> reservationSiteList);
-
+	public List<Site> getAvailableSite(long campId, LocalDate arrivInput, LocalDate departInput);
+	
+	public void formatSiteReservationTable(List<Site> reservationSiteList);
 }

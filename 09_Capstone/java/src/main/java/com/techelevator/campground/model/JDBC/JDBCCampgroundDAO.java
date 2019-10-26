@@ -40,6 +40,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 		return campInfoList;
 	}
 	
+	@Override
 	public void formatCamgroundTable(String parkChoice, List<Campground> campInfoList) {
 		System.out.println("\n" + parkChoice + " National Park Campgrounds \n");
 		String format = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";

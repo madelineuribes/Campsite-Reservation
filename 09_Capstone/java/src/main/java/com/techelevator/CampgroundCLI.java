@@ -83,26 +83,34 @@ public class CampgroundCLI {
 		}
 	}
 
-	public void handleFourthLevel(String parkChoice, List<Campground> campInfoList) {
+	public void handleFourthLevel(String parkChoice) {
+		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
 		System.out.println("Search for Campground Reservation");
 		campgroundDAO.formatCamgroundTable(parkChoice, campInfoList);
 
 		while (true) {
 			String userCampChoice = getUserInput("\nWhich campground (enter 0 to cancel)? ");
 			long result = Long.parseLong(userCampChoice);
-			
+
 			if (result == 0) {
-				// If 0
+				break;
 			}
 			LocalDate arrivalDate = getDateInput("What is the arrival date? (MM/DD/YYYY) ");
 			LocalDate departureDate = getDateInput("What is the departure date? (MM/DD/YYYY) ");
-			long diff = ChronoUnit.DAYS.between(arrivalDate, departureDate);
+			long dateDiff = ChronoUnit.DAYS.between(arrivalDate, departureDate);
 
-			if (diff < 1) {
+			if (dateDiff < 1) {
 				System.out.println("Please select another time range");
 			} else {
 				List<Site> reservationSiteList = siteDAO.getAvailableSite(result, arrivalDate, departureDate);
-				siteDAO.formatSiteReservationTable(reservationSiteList);
+				siteDAO.formatSiteReservationTable(reservationSiteList, dateDiff);
+				
+				List<Reservation> reservedSitesList = reservationDAO.getReservedSites();
+
+				
+				System.out.println("No Avaliable Sites. Please enter another date.");
+				
+				//if(arrivalDate == reservationSiteList.)
 				if (reservationSiteList.size() == 0) {
 					System.out.println("No Avaliable Sites. Please try again.");
 				} else {
@@ -121,7 +129,7 @@ public class CampgroundCLI {
 			String thirdChoice = (String) menu.getChoiceFromOptions(MENU3_OPTION_SEARCH_RES);
 
 			if (thirdChoice.equals(MENU3_OPTION_SEARCH_FOR_RESERVATION)) {
-				handleFourthLevel(parkChoice, campInfoList);
+				handleFourthLevel(parkChoice);
 			}
 
 			if (thirdChoice.equals(MENU3_OPTION_RETURN_TO_MENU2)) {
@@ -149,10 +157,10 @@ public class CampgroundCLI {
 			if (secondChoice.equals(MENU2_OPTION_VIEW_CAMPGROUNDS)) {
 				handleThirdLevel(parkChoice);
 			}
-			
-//			if (secondChoice.equals(MENU2_OPTION_SEARCH_RES)) {
-//				handleFourthLevel();
-//			}
+
+			if (secondChoice.equals(MENU2_OPTION_SEARCH_RES)) {
+				handleFourthLevel(parkChoice);
+			}
 
 			if (secondChoice.equals(MENU2_OPTION_RETURN)) {
 				break;

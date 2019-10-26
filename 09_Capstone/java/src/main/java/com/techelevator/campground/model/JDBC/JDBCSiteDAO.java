@@ -54,16 +54,16 @@ public class JDBCSiteDAO implements SiteDAO {
 		return reservationSiteList;
 	}
 	
-	@Override
-	public void formatSiteReservationTable(List<Site> reservationSiteList) {
-		System.out.println("\nResults Matching Your Search Criteria");
-		String format = "|%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-10s|\n";
+	
+	public void formatSiteReservationTable(List<Site> reservationSiteList, long dateDiff) {
+		System.out.println("\nResults Matching Your Search Criteria\n");
+		String format = "|%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-5s\n";
 		System.out.format(format, "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost");
+		System.out.println("");
 		for (Site site : reservationSiteList) {
-			String format2 = "|%1$-6s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-10s|";
+			String format2 = "|%1$-8s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-5s";
 			System.out.format(format2, site.getSiteNumber(), site.getMaxOccupancy(), site.isAccessible(),
-					site.getMaxRvLength(), site.isUtilities(), site.getDailyFee().longValue()+".00" + "\n");
-			//(daysBetween * site.getDailyFee().longValue())+".00")
+					site.getMaxRvLength(), site.isUtilities(), (dateDiff * site.getDailyFee().longValue())+".00" + "\n");
 		}
 	}
 }

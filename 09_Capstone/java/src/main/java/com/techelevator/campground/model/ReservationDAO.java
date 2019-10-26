@@ -9,9 +9,7 @@ public interface ReservationDAO {
 	
 	public void getReservationById(long siteId, LocalDate arrivalDate, LocalDate departureDate,
 			LocalDate createdDate, String userNameRes);
-
-//	public List<Reservation> getAvailableSite(String campId, String arrivInput, String departInput);
-
-//	public void formatSiteReservationTable(List<Reservation> reservationSiteList);
+	
+	public List<Reservation> getAllReservations();
 	
 }

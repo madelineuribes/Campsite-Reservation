@@ -1,6 +1,8 @@
 package com.techelevator.campground.model.JDBC;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -16,6 +18,44 @@ public class JDBCReservationDAO implements ReservationDAO {
 
 	public JDBCReservationDAO(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+	
+	public List<Reservation> getAllReservations() {
+		List<Reservation> allRes = new ArrayList<>();
+		String sqlGetAllReservation = "SELECT * FROM reservation";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllReservation);
+		
+		while(results.next()) {
+			Reservation tempRes = new Reservation();
+			tempRes.setReservationId(results.getInt("reservation_id"));
+			tempRes.setSiteId(results.getLong("site_id"));
+			tempRes.setReservationName(results.getNString("name"));
+			tempRes.setFromDate(results.getDate("from_date").toLocalDate());
+			tempRes.setToDate(results.getDate("to_date").toLocalDate());
+			tempRes.setCreatedDate(results.getDate("create_date").toLocalDate());
+			allRes.add(tempRes);
+		}
+		return allRes;
+	}
+
+	public List<Reservation> getReservedSites(long siteId, LocalDate arrivalDate, LocalDate departureDate) {
+		List<Reservation> reservedSitesList = new ArrayList<>();
+		String sqlGetAllReservation = "SELECT * FROM reservation WHERE site_id = ? " + 
+				"AND (from_date BETWEEN ? AND ?) OR (to_date BETWEEN ? AND ?)";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllReservation, siteId, arrivalDate, departureDate);
+		
+		while(results.next()) {
+			Reservation tempRes = new Reservation();
+			tempRes.setReservationId(results.getInt("reservation_id"));
+			tempRes.setSiteId(results.getLong("site_id"));
+			tempRes.setReservationName(results.getNString("name"));
+			tempRes.setFromDate(results.getDate("from_date").toLocalDate());
+			tempRes.setToDate(results.getDate("to_date").toLocalDate());
+			tempRes.setCreatedDate(results.getDate("create_date").toLocalDate());
+			reservedSitesList.add(tempRes);
+		}
+		
+		return reservedSitesList;
 	}
 
 	public void getReservationById(long siteId, LocalDate arrivalDate, LocalDate departureDate,
@@ -54,7 +94,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 		
 		return newRes;
 	}
-
+	
 }
 
 

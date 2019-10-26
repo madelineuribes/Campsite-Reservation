@@ -38,12 +38,9 @@ public class CampgroundCLI {
 	private static final String[] MENU3_OPTION_SEARCH_RES = { MENU3_OPTION_SEARCH_FOR_RESERVATION,
 			MENU3_OPTION_RETURN_TO_MENU2 };
 
-	private JDBCParkDAO JDBCPark;
-	private JDBCCampgroundDAO JDBCCamp;
-	private JDBCReservationDAO JDBCReservation;
+	private SiteDAO siteDAO;
 	private ParkDAO parkDAO;
 	private CampgroundDAO campgroundDAO;
-	private SiteDAO JDBCSite;
 
 	private String[] mainMenuOptions;
 
@@ -61,17 +58,14 @@ public class CampgroundCLI {
 
 	public CampgroundCLI(DataSource datasource) {
 		menu = new Menu(System.in, System.out);
-		JDBCPark = new JDBCParkDAO(datasource);
-		JDBCCamp = new JDBCCampgroundDAO(datasource);
-		JDBCReservation = new JDBCReservationDAO(datasource);
-		JDBCSite = new JDBCSiteDAO(datasource);
+		siteDAO = new JDBCSiteDAO(datasource);
 		parkDAO = new JDBCParkDAO(datasource);
 		campgroundDAO = new JDBCCampgroundDAO(datasource);
 	}
 
 	public void handleFourthLevel(String parkChoice, List<Campground> campInfoList) {
 		System.out.println("Search for Campground Reservation");
-		JDBCCamp.formatCamgroundTable(parkChoice, campInfoList);
+		campgroundDAO.formatCamgroundTable(parkChoice, campInfoList);
 
 		while (true) {
 			String userCampChoice = getUserInput("\nWhich campground (enter 0 to cancel)? ");
@@ -88,8 +82,8 @@ public class CampgroundCLI {
 			} else {
 				String format = "%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-4s|\n";
 				System.out.format(format, "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost");
-				List<Site> reservationSiteList = JDBCSite.getAvailableSite(result, arrivalDate, departureDate);
-				JDBCSite.formatSiteReservationTable(reservationSiteList);
+				List<Site> reservationSiteList = siteDAO.getAvailableSite(result, arrivalDate, departureDate);
+				siteDAO.formatSiteReservationTable(reservationSiteList);
 				if (reservationSiteList.size() == 0) {
 					System.out.println("No Avaliable Sites. Please try again.");
 				} else {
@@ -102,7 +96,7 @@ public class CampgroundCLI {
 	public void handleThirdLevel(String parkChoice) {
 
 		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
-		JDBCCamp.formatCamgroundTable(parkChoice, campInfoList);
+		campgroundDAO.formatCamgroundTable(parkChoice, campInfoList);
 
 		while (true) {
 			String thirdChoice = (String) menu.getChoiceFromOptions(MENU3_OPTION_SEARCH_RES);
@@ -148,7 +142,7 @@ public class CampgroundCLI {
 		System.out.println("National Park Campsite Reservation");
 		System.out.println("*--------------------------------*");
 		System.out.println("Select a Park for Further Details");
-		mainMenuOptions = JDBCPark.getParkStringArray(JDBCPark.getAllParks());
+		mainMenuOptions = parkDAO.getParkStringArray(parkDAO.getAllParks());
 
 		// 1st level of the menu
 		while (true) {
@@ -175,7 +169,7 @@ public class CampgroundCLI {
 
 	private LocalDate getDateInput(String prompt) {
 		LocalDate userDate = null;
-		DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("mm/dd/yyyy");
+		DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
 		while (userDate == null) {
 			try {

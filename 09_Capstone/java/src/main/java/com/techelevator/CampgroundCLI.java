@@ -18,6 +18,7 @@ import com.techelevator.campground.model.CampgroundDAO;
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
 import com.techelevator.campground.model.Reservation;
+import com.techelevator.campground.model.ReservationDAO;
 import com.techelevator.campground.model.Site;
 import com.techelevator.campground.model.SiteDAO;
 import com.techelevator.campground.model.JDBC.JDBCCampgroundDAO;
@@ -41,6 +42,7 @@ public class CampgroundCLI {
 	private SiteDAO siteDAO;
 	private ParkDAO parkDAO;
 	private CampgroundDAO campgroundDAO;
+	private ReservationDAO reservationDAO;
 
 	private String[] mainMenuOptions;
 
@@ -61,6 +63,24 @@ public class CampgroundCLI {
 		siteDAO = new JDBCSiteDAO(datasource);
 		parkDAO = new JDBCParkDAO(datasource);
 		campgroundDAO = new JDBCCampgroundDAO(datasource);
+		reservationDAO = new JDBCReservationDAO(datasource);
+	}
+
+	public void handleFifthLevel(LocalDate arrivalDate, LocalDate departureDate) {
+		while (true) {
+			String userSiteChoice = getUserInput("Which site should be reserved (enter 0 to cancel)? ");
+			long userSiteChoiceNum = Long.parseLong(userSiteChoice);
+			String userNameRes = getUserInput("\nWhat name should the reservation be made under? ");
+
+			if (userSiteChoiceNum == 0) {
+				break;
+			} else {
+				reservationDAO.getReservationById(userSiteChoiceNum, arrivalDate, departureDate, LocalDate.now(),
+						userNameRes);
+				System.out.println("Thank you!");
+				System.exit(0);
+			}
+		}
 	}
 
 	public void handleFourthLevel(String parkChoice, List<Campground> campInfoList) {
@@ -81,14 +101,12 @@ public class CampgroundCLI {
 			if (diff < 1) {
 				System.out.println("Please select another time range");
 			} else {
-				String format = "%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-4s|\n";
-				System.out.format(format, "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost");
 				List<Site> reservationSiteList = siteDAO.getAvailableSite(result, arrivalDate, departureDate);
 				siteDAO.formatSiteReservationTable(reservationSiteList);
 				if (reservationSiteList.size() == 0) {
 					System.out.println("No Avaliable Sites. Please try again.");
 				} else {
-					// add reservation
+					handleFifthLevel(arrivalDate, departureDate);
 				}
 			}
 		}
@@ -131,6 +149,10 @@ public class CampgroundCLI {
 			if (secondChoice.equals(MENU2_OPTION_VIEW_CAMPGROUNDS)) {
 				handleThirdLevel(parkChoice);
 			}
+			
+//			if (secondChoice.equals(MENU2_OPTION_SEARCH_RES)) {
+//				handleFourthLevel();
+//			}
 
 			if (secondChoice.equals(MENU2_OPTION_RETURN)) {
 				break;

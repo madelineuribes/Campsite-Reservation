@@ -1,5 +1,7 @@
 package com.techelevator.campground.model.JDBC;
 
+import java.time.LocalDate;
+
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,51 +10,52 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import com.techelevator.campground.model.Reservation;
 import com.techelevator.campground.model.ReservationDAO;
 
+public class JDBCReservationDAO implements ReservationDAO {
 
-public class JDBCReservationDAO implements ReservationDAO{
-	
-private JdbcTemplate jdbcTemplate;
-	
+	private JdbcTemplate jdbcTemplate;
+
 	public JDBCReservationDAO(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
+
+	public void getReservationById(long siteId, LocalDate arrivalDate, LocalDate departureDate,
+		LocalDate createdDate, String userNameRes) {
+		Reservation tempRes = new Reservation();
+
+		tempRes.setCreatedDate(createdDate);
+		tempRes.setFromDate(arrivalDate);
+		tempRes.setToDate(departureDate);
+		tempRes.setSiteId(siteId);
+		tempRes.setReservationName(userNameRes);
+		tempRes = createReservation(tempRes);
+		Reservation newRes = selectReservationId(userNameRes);
+		System.out.println("The reservation has been made and the confirmation id is " + newRes.getReservationId());
+	}
+
+	public Reservation createReservation(Reservation tempRes) {
+		Reservation newRes = new Reservation();
+
+		String sqlInsertRes = "INSERT INTO reservation (reservation_id, site_id, name, from_date, to_date, create_date)"
+				+ "VALUES(default,?,?,?,?,?)";
+		jdbcTemplate.update(sqlInsertRes, tempRes.getSiteId(), tempRes.getReservationName(),
+				tempRes.getFromDate(), tempRes.getToDate(), tempRes.getCreatedDate());
+
+		return newRes;
+	}
 	
-	/*
-	 * @Override public List<Reservation> getAvailableSite(String campId, String
-	 * arrivInput, String departInput) { List<Reservation> reservationSiteList = new
-	 * ArrayList<>(); Integer intCamp = Integer.parseInt(campId); LocalDate
-	 * arriveDate = LocalDate.parse(arrivInput); LocalDate departDate =
-	 * LocalDate.parse(departInput); String sqlGetAllSites =
-	 * "SELECT * FROM site WHERE site_id " +
-	 * "NOT IN (SELECT site.site_id FROM campground " +
-	 * "INNER JOIN site ON site.campground_id = campground.campground_id " +
-	 * "INNER JOIN reservation ON reservation.site_id = site.site_id " +
-	 * "WHERE reservation.from_date <= ? " + "AND reservation.to_date >= ? " +
-	 * "AND campground.campground_id = ?)"; SqlRowSet results =
-	 * jdbcTemplate.queryForRowSet(sqlGetAllSites, departDate, arriveDate, intCamp);
-	 * while (results.next()) { Reservation tempRes = new Reservation();
-	 * tempRes.setSiteId(results.getInt("site_id"));
-	 * tempRes.setReservationId(results.getInt("reservation_id"));
-	 * tempRes.setFromDate(results.getString("from_date"));
-	 * tempRes.setToDate(results.getString("to_date"));
-	 * tempRes.setCreatedDate(results.getString("create_date"));
-	 * tempRes.setReservationName(results.getString("name"));
-	 * reservationSiteList.add(tempRes); } return reservationSiteList; }
-	 * 
-	 * @Override public void formatSiteReservationTable(List<Reservation>
-	 * reservationSiteList) {
-	 * System.out.println("\nResults Matching Your Search Criteria"); String format
-	 * = "%1$-10s|%2$-10s|%3$-10s|%4$-10s|%5$-10s|%6$-10s|\n";
-	 * System.out.format(format, "Site No.", "Max Occup.", "Accessible?",
-	 * "Max RV Length", "Utility", "Cost"); for (int j = 0; j <
-	 * reservationSiteList.size(); j++) { System.out.format(format,
-	 * reservationSiteList.get(j).getSiteId(), siteList.get(j).getMaxOccupancy(),
-	 * siteList.get(j).isAccessible(), siteList.get(j).getMaxRvLength(),
-	 * siteList.get(j).isUtilities(), campInfoList.get(j).getDailyFee() + "\n"); } }
-	 */
+	public Reservation selectReservationId(String userNameRes) {
+		Reservation newRes = new Reservation();
+		String sqlString = "SELECT reservation_id FROM reservation WHERE name = ?";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlString, userNameRes);
+		
+		if(results.next()) {
+			newRes.setReservationId(results.getInt("reservation_id"));
+		}
+		
+		return newRes;
+	}
+
 }
-
-
 
 
 

@@ -1,19 +1,21 @@
 package com.techelevator.campground.model;
 
+import java.time.LocalDate;
+
 public class Reservation {
 	
-	private int siteId;
+	private Long siteId;
 	private int reservationId;
-	private String fromDate;
-	private String createdDate;
+	private LocalDate fromDate;
+	private LocalDate createdDate;
 	private String reservationName;
-	private String toDate;
+	private LocalDate toDate;
 	
 	
-	public int getSiteId() {
+	public Long getSiteId() {
 		return siteId;
 	}
-	public void setSiteId(int siteId) {
+	public void setSiteId(Long siteId) {
 		this.siteId = siteId;
 	}
 	public int getReservationId() {
@@ -22,22 +24,22 @@ public class Reservation {
 	public void setReservationId(int reservationId) {
 		this.reservationId = reservationId;
 	}
-	public String getToDate() {
+	public LocalDate getToDate() {
 		return toDate;
 	}
-	public void setToDate(String toDate) {
+	public void setToDate(LocalDate toDate) {
 		this.toDate = toDate;
 	}
-	public String getFromDate() {
+	public LocalDate getFromDate() {
 		return fromDate;
 	}
-	public void setFromDate(String fromDate) {
+	public void setFromDate(LocalDate fromDate) {
 		this.fromDate = fromDate;
 	}
-	public String getCreatedDate() {
+	public LocalDate getCreatedDate() {
 		return createdDate;
 	}
-	public void setCreatedDate(String createdDate) {
+	public void setCreatedDate(LocalDate createdDate) {
 		this.createdDate = createdDate;
 	}
 	public String getReservationName() {

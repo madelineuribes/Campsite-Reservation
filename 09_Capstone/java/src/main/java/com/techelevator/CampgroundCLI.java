@@ -70,6 +70,7 @@ public class CampgroundCLI {
 		while (true) {
 			String userCampChoice = getUserInput("\nWhich campground (enter 0 to cancel)? ");
 			long result = Long.parseLong(userCampChoice);
+			
 			if (result == 0) {
 				// If 0
 			}

@@ -103,6 +103,7 @@ public class CampgroundCLI {
 				
 				if (reservationSiteList.size() == 0) {
 					System.out.println("No Avaliable Sites. Please try again.");
+					
 				} else {
 					handleFifthLevel(arrivalDate, departureDate);
 				}

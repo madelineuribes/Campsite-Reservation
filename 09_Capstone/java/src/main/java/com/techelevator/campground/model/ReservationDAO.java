@@ -12,4 +12,8 @@ public interface ReservationDAO {
 	
 	public List<Reservation> getAllReservations();
 	
+	public Reservation selectReservationId(String userNameRes);
+	
+//	public List<Reservation> getReservedSites(long siteId, LocalDate arrivalDate, LocalDate departureDate);
+	
 }

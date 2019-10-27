@@ -92,6 +92,5 @@ public class JDBCReservationDAO implements ReservationDAO {
 			newRes.setReservationId(results.getInt("reservation_id"));
 		}
 		return newRes;
-	}
-	
+	}	
 }

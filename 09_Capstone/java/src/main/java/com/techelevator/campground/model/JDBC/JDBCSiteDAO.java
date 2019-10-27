@@ -1,7 +1,6 @@
 package com.techelevator.campground.model.JDBC;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.techelevator.campground.model.Reservation;
 import com.techelevator.campground.model.Site;
 import com.techelevator.campground.model.SiteDAO;
 
@@ -54,16 +52,38 @@ public class JDBCSiteDAO implements SiteDAO {
 		return reservationSiteList;
 	}
 	
-	
 	public void formatSiteReservationTable(List<Site> reservationSiteList, long dateDiff) {
-		System.out.println("\nResults Matching Your Search Criteria\n");
-		String format = "|%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-5s\n";
+		System.out.println("\n-*-Results Matching Your Search Criteria-*-\n");
+		String format = "%1$-7s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-6s|\n";
 		System.out.format(format, "Site No.", "Max Occup.", "Accessible?", "Max RV Length", "Utility", "Cost");
-		System.out.println("");
+		System.out.println("--------------------------------------------------------------");
 		for (Site site : reservationSiteList) {
-			String format2 = "|%1$-8s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-5s";
-			System.out.format(format2, site.getSiteNumber(), site.getMaxOccupancy(), site.isAccessible(),
-					site.getMaxRvLength(), site.isUtilities(), (dateDiff * site.getDailyFee().longValue())+".00" + "\n");
+			String isAccessible = convertAccessBoolean(site.isAccessible());
+			String utilities = convertUtilityBoolean(site.isUtilities());
+			
+			String format2 = "%1$-8s|%2$-10s|%3$-12s|%4$-13s|%5$-7s|%6$-1s";
+			System.out.format(format2, site.getSiteNumber(), site.getMaxOccupancy(), isAccessible,
+					site.getMaxRvLength(), utilities, "$" + (dateDiff * site.getDailyFee().longValue())+".00" + "\n");
 		}
+	}
+	
+	public String convertAccessBoolean (boolean isAccessible) {
+		String accessibility = "";
+		if(isAccessible == true) {
+			accessibility = "Yes";
+		} else if (isAccessible == false) {
+			accessibility = "No";
+		}
+		return accessibility;
+	}
+	
+	public String convertUtilityBoolean (boolean utilities) {
+		String utilityResult = "";
+		if(utilities == true) {
+			utilityResult = "Yes";
+		} else if (utilities == false) {
+			utilityResult = "N/A";
+		}
+		return utilityResult;
 	}
 }

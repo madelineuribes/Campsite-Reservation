@@ -1,7 +1,5 @@
 package com.techelevator.campground.model.JDBC;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +40,7 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 	
 	@Override
 	public void formatCamgroundTable(String parkChoice, List<Campground> campInfoList) {
-		System.out.println("\n" + parkChoice + " National Park Campgrounds \n");
+		System.out.println("\n * " + parkChoice + " National Park Campgrounds *\n");
 		String format = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";
 		System.out.format(format, "", "Name", "Open", "Close", "Daily Fee");
 		String format1 = "%1$-2s|%2$-32s|%3$-10s|%4$-10s|%5$-10s|\n";

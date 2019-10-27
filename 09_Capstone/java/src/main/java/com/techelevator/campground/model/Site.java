@@ -76,4 +76,5 @@ public class Site {
 	public void setDailyFee(BigDecimal dailyFee) {
 		this.dailyFee = dailyFee.setScale(2);
 	}
+
 }

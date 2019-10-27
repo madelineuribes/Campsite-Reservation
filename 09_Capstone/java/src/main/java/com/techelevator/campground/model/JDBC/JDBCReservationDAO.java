@@ -69,7 +69,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 		tempRes.setReservationName(userNameRes);
 		tempRes = createReservation(tempRes);
 		Reservation newRes = selectReservationId(userNameRes);
-		System.out.println("The reservation has been made and the confirmation id is " + newRes.getReservationId());
+		System.out.println("The reservation has been made. The confirmation ID is: " + newRes.getReservationId() + ".");
 	}
 
 	public Reservation createReservation(Reservation tempRes) {
@@ -91,17 +91,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 		if(results.next()) {
 			newRes.setReservationId(results.getInt("reservation_id"));
 		}
-		
 		return newRes;
 	}
 	
 }
-
-
-
-
-
-
-
-
-

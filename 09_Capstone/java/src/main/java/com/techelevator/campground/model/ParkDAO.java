@@ -1,6 +1,5 @@
 package com.techelevator.campground.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface ParkDAO {
@@ -9,6 +8,8 @@ public interface ParkDAO {
 	
 	public String[] getParkStringArray(List<Park> parkNames);
 	
-	public Park displayParkInfo(String name);
+	public Park getParkInfo(String name);
+	
+	public void displayParkInfo(Park parkInfo);
 	
 }

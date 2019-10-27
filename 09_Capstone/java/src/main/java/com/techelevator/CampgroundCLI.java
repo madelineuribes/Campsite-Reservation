@@ -1,7 +1,5 @@
 package com.techelevator;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -17,7 +15,6 @@ import com.techelevator.campground.model.Campground;
 import com.techelevator.campground.model.CampgroundDAO;
 import com.techelevator.campground.model.Park;
 import com.techelevator.campground.model.ParkDAO;
-import com.techelevator.campground.model.Reservation;
 import com.techelevator.campground.model.ReservationDAO;
 import com.techelevator.campground.model.Site;
 import com.techelevator.campground.model.SiteDAO;
@@ -68,7 +65,7 @@ public class CampgroundCLI {
 
 	public void handleFifthLevel(LocalDate arrivalDate, LocalDate departureDate) {
 		while (true) {
-			String userSiteChoice = getUserInput("Which site should be reserved (enter 0 to cancel)? ");
+			String userSiteChoice = getUserInput("\nWhich site should be reserved (enter 0 to cancel)? ");
 			long userSiteChoiceNum = Long.parseLong(userSiteChoice);
 			String userNameRes = getUserInput("\nWhat name should the reservation be made under? ");
 
@@ -85,13 +82,12 @@ public class CampgroundCLI {
 
 	public void handleFourthLevel(String parkChoice) {
 		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
-		System.out.println("Search for Campground Reservation");
+		System.out.println("\n-*-Search for Campground Reservation-*-");
 		campgroundDAO.formatCamgroundTable(parkChoice, campInfoList);
 
 		while (true) {
 			String userCampChoice = getUserInput("\nWhich campground (enter 0 to cancel)? ");
 			long result = Long.parseLong(userCampChoice);
-
 			if (result == 0) {
 				break;
 			}
@@ -105,12 +101,6 @@ public class CampgroundCLI {
 				List<Site> reservationSiteList = siteDAO.getAvailableSite(result, arrivalDate, departureDate);
 				siteDAO.formatSiteReservationTable(reservationSiteList, dateDiff);
 				
-				List<Reservation> reservedSitesList = reservationDAO.getReservedSites();
-
-				
-				System.out.println("No Avaliable Sites. Please enter another date.");
-				
-				//if(arrivalDate == reservationSiteList.)
 				if (reservationSiteList.size() == 0) {
 					System.out.println("No Avaliable Sites. Please try again.");
 				} else {
@@ -121,7 +111,6 @@ public class CampgroundCLI {
 	}
 
 	public void handleThirdLevel(String parkChoice) {
-
 		List<Campground> campInfoList = campgroundDAO.getAllCampgrounds(parkChoice);
 		campgroundDAO.formatCamgroundTable(parkChoice, campInfoList);
 
@@ -131,7 +120,6 @@ public class CampgroundCLI {
 			if (thirdChoice.equals(MENU3_OPTION_SEARCH_FOR_RESERVATION)) {
 				handleFourthLevel(parkChoice);
 			}
-
 			if (thirdChoice.equals(MENU3_OPTION_RETURN_TO_MENU2)) {
 				break;
 			}
@@ -140,16 +128,8 @@ public class CampgroundCLI {
 
 	public void handleSecondLevel(String parkChoice) {
 		while (true) {
-			Park parkInfo = parkDAO.displayParkInfo(parkChoice);
-			System.out.println("\nPark Information");
-			System.out.println(parkInfo.getName() + " National Park\n");
-			String format1 = "%1$-15s%2$-10s";
-			String format2 = "%1$-14s%2$-10s";
-			System.out.format(format2, "Location:", parkInfo.getLocation());
-			System.out.format(format1, "\nArea:", parkInfo.getArea() + " sq km");
-			System.out.format(format1, "\nEstablished:", parkInfo.getEstablishDate());
-			System.out.format(format1, "\nVisitors:", parkInfo.getVisitors());
-			System.out.println("\n" + parkInfo.getDescription());
+			Park parkInfo = parkDAO.getParkInfo(parkChoice);
+			parkDAO.displayParkInfo(parkInfo);
 
 			// Display the second level of prompts:
 			String secondChoice = (String) menu.getChoiceFromOptions(MENU2_OPTIONS);
@@ -157,11 +137,9 @@ public class CampgroundCLI {
 			if (secondChoice.equals(MENU2_OPTION_VIEW_CAMPGROUNDS)) {
 				handleThirdLevel(parkChoice);
 			}
-
 			if (secondChoice.equals(MENU2_OPTION_SEARCH_RES)) {
 				handleFourthLevel(parkChoice);
 			}
-
 			if (secondChoice.equals(MENU2_OPTION_RETURN)) {
 				break;
 			}
@@ -174,9 +152,8 @@ public class CampgroundCLI {
 		System.out.println("*--------------------------------*");
 		System.out.println("Select a Park for Further Details");
 		mainMenuOptions = parkDAO.getParkStringArray(parkDAO.getAllParks());
-
-		// 1st level of the menu
-		while (true) {
+		
+		while (true) { // 1st level of the menu
 
 			String parkChoice = (String) menu.getChoiceFromOptions(mainMenuOptions);
 			if (parkChoice.equals(mainMenuOptions[mainMenuOptions.length - 1])) {
@@ -212,5 +189,4 @@ public class CampgroundCLI {
 		}
 		return userDate;
 	}
-
 }

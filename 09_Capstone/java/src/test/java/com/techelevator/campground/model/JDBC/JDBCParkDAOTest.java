@@ -111,13 +111,13 @@ public class JDBCParkDAOTest {
 	
 	@Test
 	public void displayParkInfoReturnsCorrectInfo() {
-		Park testPark = dao.displayParkInfo("Arches");   				// (2, "Arches", "Utah", 76518, 1284767, "1929-04-12", "" );
+		Park testPark = dao.getParkInfo("Arches");   				// (2, "Arches", "Utah", 76518, 1284767, "1929-04-12", "" );
 		assertEquals(1284767, testPark.getVisitors());
 	}
 	
 	@Test
 	public void displayParkInfoReturnsNotFound() {
-		Park testPark = dao.displayParkInfo("Glacier");   				// (2, "Arches", "Utah", 76518, 1284767, "1929-04-12", "" );
+		Park testPark = dao.getParkInfo("Glacier");   				// (2, "Arches", "Utah", 76518, 1284767, "1929-04-12", "" );
 		assertEquals(0, testPark.getVisitors());
 	}
 

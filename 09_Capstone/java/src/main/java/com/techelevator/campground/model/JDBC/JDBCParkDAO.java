@@ -45,7 +45,7 @@ public class JDBCParkDAO implements ParkDAO{
 	}
 	
 	@Override
-	public Park displayParkInfo(String name) {
+	public Park getParkInfo(String name) {
 		Park parkInfo = new Park();
 		String sqlGetAllParks = "SELECT * FROM park WHERE name = ?";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sqlGetAllParks, name);
@@ -59,6 +59,18 @@ public class JDBCParkDAO implements ParkDAO{
 			parkInfo.setDescription(results.getString("description"));
 		}
 		return parkInfo;
+	}
+	
+	public void displayParkInfo(Park parkInfo) {
+		System.out.println("\n-*-Park Information-*-");
+		System.out.println("*" + parkInfo.getName() + " National Park*\n");
+		String format1 = "%1$-15s%2$-10s";
+		String format2 = "%1$-14s%2$-10s";
+		System.out.format(format2, "Location:", parkInfo.getLocation());
+		System.out.format(format1, "\nArea:", parkInfo.getArea() + " sq km");
+		System.out.format(format1, "\nEstablished:", parkInfo.getEstablishDate());
+		System.out.format(format1, "\nVisitors:", parkInfo.getVisitors());
+		System.out.println("\n" + parkInfo.getDescription());
 	}
 }
 
